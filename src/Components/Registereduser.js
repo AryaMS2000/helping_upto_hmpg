@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Homebar from "./Homebar";
+import Footer from './Footer';
 import logo from './logo.jpg';
-import { Box, Grid, Card, Typography,CardContent,IconButton,Avatar ,Tooltip} from '@material-ui/core';
+import { Box, Grid, Card, Typography, CardContent, IconButton, Avatar, Tooltip } from '@material-ui/core';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import axios from 'axios';
 import { deepPurple } from '@material-ui/core/colors';
@@ -17,12 +18,15 @@ const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
   },
+  head:{
+    color:"#6200EE"
+  },
 }));
 
 const Reguserpg = (props) => {
   const classes = useStyles();
   // const cardStyle={padding :'20px 20px',width:500, height:'auto', margin:"30px auto"}
-  const headStyle = { fontFamily: 'serif', color: 'blue' }
+  //const headStyle = { fontFamily: 'serif', color: 'blue' }
   // const btnStyle = {margin:'8px 0' }
   // const logoStyle = {height:120,width:180}
 
@@ -44,46 +48,47 @@ const Reguserpg = (props) => {
       })
   }, [eventn])
 
-  const sentEmail = ()=>{
+  const sentEmail = () => {
     axios.post(`http://localhost:8081/account/admin/sendReminders/${eventn}`)
-    .then(res => {
-      if (res.status === 200) {
-      alert("Message sent successfully")}
-      
-    })
-    .catch(err => {
-      alert(err)
+      .then(res => {
+        if (res.status === 200) {
+          alert("Remainders sent successfully")
+        }
 
-    })
+      })
+      .catch(err => {
+        alert(err)
+
+      })
     // alert("senting mail")
   };
   return (
-    <Box>
+    <Grid  height='100%'>
       <Homebar />
       <Box mt={1} mb={3} align="center">
         <img src={logo} alt="logo" width='200' height='150' />
       </Box>
       <Box align="center">
-      <Grid
-  container
-  direction="row"
-  justifyContent="center"
-  alignItems="center"
->
-        <Typography variant='h5' style={headStyle}><b> Registered users for {eventn}</b> </Typography>
-        <Tooltip title="Count of participants">
-        <Avatar className={classes.purple }>{count}</Avatar></Tooltip>
-        <Tooltip title="Sent Email">
-         <IconButton color='primary' aria-label="Notify" className={classes.margin}
-        onClick={sentEmail}>
-        <NotificationsIcon/>
-        </IconButton></Tooltip></Grid>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Typography variant='h5' className={classes.head} >Registered users for {eventn}</Typography>
+          <Tooltip title="Count of participants">
+            <Avatar className={classes.purple}>{count}</Avatar></Tooltip>
+          <Tooltip title="Sent Email">
+            <IconButton color='primary' aria-label="Notify" className={classes.margin}
+              onClick={sentEmail}>
+              <NotificationsIcon />
+            </IconButton></Tooltip></Grid>
       </Box>
       <Box m={5}>
-        
-            <Grid container  spacing={6} >
-             
-                    {/* <Grid item xs={12} sm={6} md={6}>
+
+        <Grid container spacing={6} >
+
+          {/* <Grid item xs={12} sm={6} md={6}>
                           <Card style={{minwidth:200}}>
                           <CardContent >
                             <Box ml={15}>
@@ -93,29 +98,30 @@ const Reguserpg = (props) => {
                           </CardContent>
                           </Card>
                           </Grid> */}
-                    {user.map((option) => (
-                      // <Box mb={3}>
-                        // <Form key={post.id}>
-                        <Grid item xs={12} sm={6} md={6}>
-                          <Card style={{minwidth:200}}>
-                          <CardContent>
-                          {/* <User id:&nbsp;&nbsp;{post.id}<br></br> */}
-                          <b>First Name :</b>&nbsp;&nbsp;{option.firstname}<br></br>
-                          <b>Last Name :</b>&nbsp;&nbsp;{option.lastname}<br></br>
-                          <b>Email id :</b>&nbsp;&nbsp;{option.email}<br></br>
-                          </CardContent></Card></Grid>
-                        // </Form>
-                      // </Box>
-                    ))}
+          {user.map((option) => (
+            // <Box mb={3}>
+            // <Form key={post.id}>
+            <Grid item xs={12} sm={6} md={6}>
+              <Card style={{ minwidth: 200,backgroundColor:"#D6EAF8" }}>
+                <CardContent>
+                  {/* <User id:&nbsp;&nbsp;{post.id}<br></br> */}
+                  <b>First Name :</b>&nbsp;&nbsp;{option.firstname}<br></br>
+                  <b>Last Name :</b>&nbsp;&nbsp;{option.lastname}<br></br>
+                  <b>Email id :</b>&nbsp;&nbsp;{option.email}<br></br>
+                </CardContent></Card></Grid>
+            // </Form>
+            // </Box>
+          ))}
 
-                  
-                {/* </Formik> */}
-              {/* </Card> */}
-            </Grid>
-          {/* </div>
+
+          {/* </Formik> */}
+          {/* </Card> */}
+        </Grid>
+        {/* </div>
         </div> */}
-      </Box>
-    </Box>
+      </Box><Box mt={20}>
+      <Footer /></Box>
+      </Grid>
 
   )
 }
