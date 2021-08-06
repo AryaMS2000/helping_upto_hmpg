@@ -12,7 +12,7 @@ import weekend from './weekend.jpg';
 import art from './art&craft.jpg';
 import food4thougth from './food4thougth.png';
 import Box from '@material-ui/core/Box';
-
+import {useHistory } from 'react-router-dom';
 const imgstyle = {
   margin: '10px 60px'
 }
@@ -29,8 +29,11 @@ const useStyles = makeStyles({
   },
 });
 const Home = () => {
- 
+  let history = useHistory();
   //const classes = useStyles();
+  const Past= ()  =>{
+    history.push('/PastEvents');
+};
   return (
 
       <Box  mt={3}>
@@ -42,10 +45,10 @@ const Home = () => {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
             <Card className={useStyles.root}>
-              <CardActionArea >
-              <a href="Register">
+              <CardActionArea onClick={()=>{history.push("/Weekend");}} >
+              {/* <a href="Weekend"> */}
                 <img src={weekend} alt="Weekend Events" width='60%' height='120' style={imgstyle} />
-                </a>
+                {/* </a> */}
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">
                     Weekend Events
@@ -96,7 +99,7 @@ const Home = () => {
       <Box m={3}>
       <Grid container direction="column" justifyContent="flex-end" alignItems="flex-end">
       <Grid item xs={12} sm={6} md={3}>
-      <Button type='submit' variant='contained' color='primary'>Go To Past Events</Button>
+      <Button type='submit' variant='contained' color='primary' onClick={Past}>Go To Past Events</Button>
        </Grid>
        </Grid>
        </Box>
