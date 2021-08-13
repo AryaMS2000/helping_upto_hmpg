@@ -1,12 +1,13 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
+import {React,useState,Fragment} from 'react';
+ import { useHistory } from 'react-router-dom';
 import { Grid, Paper, Typography, TextField, Button } from '@material-ui/core';
 import logo from './logo.jpg';
 import { Form, Formik, ErrorMessage, Field } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-
-
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 
 const Register = () => {
@@ -14,7 +15,20 @@ const Register = () => {
     const headStyle = { margin: 0, fontFamily: 'san-serif', color: 'blue' }
     const marginTop = { margin: 15 }
     const formStyle = { textAlign: 'center' }
+    const [success,setSuccess]=useState(false);
+    const [mesg,setMesg]=useState('');
+    const [open, setOpen] =useState(false);
 
+    /*const [state, setState] = React.useState({
+        open: true,
+        vertical: 'bottom',
+        horizontal: 'center',
+      });
+    
+      const { vertical, horizontal, open } = state;
+      const handleClose = () => {
+        setState({ ...state, open: false });
+      };*/
     
     const initialValues = {
         firstname: '',
@@ -23,7 +37,7 @@ const Register = () => {
         password: '',
         confirmpassword: ''
     }
-
+    
 
     let history = useHistory();
     const onSubmit = (values, props) => {
@@ -41,26 +55,45 @@ const Register = () => {
                 console.log(response.data)
                 console.log(response.status)
                 if (res === 200) {
-                    alert("Registered successfully")
-                    history.push('/');
+                    //alert("Registered successfully")
+                    setSuccess(true);
+                    setMesg(response.data.message);
+                    setOpen(true);
+                    // history.push('/');
                 }
 
             })
             .catch((error) => {
                 if (error.response.status === 400) {
                     console.log(error.response.data.message);
-                     alert("Email already exist")
+                    //  alert("Email already exist")
+                    setOpen(true);
+                    setMesg(error.response.data.message);
                     props.resetForm()
                 }
                 else{
-                alert("Something went wrong");
-                   
+            //    alert("Something went wrong");
+                    setOpen(true);
+                    setMesg("Something went wrong");
+
                 console.log(error)}
             });
 
-
+            // setSuccess(false);
 
     }
+    const handleClose = (event, reason) => {
+        if(success)
+        {
+            setOpen(false);
+            history.push('/');
+        }
+        else{
+            setOpen(false);
+            
+        }
+    };
+
     const validationSchema = Yup.object().shape({
         firstname: Yup.string()
             //.min(2, "Its too short")
@@ -114,6 +147,25 @@ const Register = () => {
                     )}
                 </Formik>
             </Paper>
+            <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={mesg}
+        action={
+          <Fragment>
+           
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Fragment>
+        }
+        />    
+
         </Grid>
 
     );
