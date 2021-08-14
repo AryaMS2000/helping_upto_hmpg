@@ -1,4 +1,5 @@
 
+
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import Register from './Components/Register';
@@ -13,7 +14,9 @@ import Weekend from './Components/Weekend';
 import Reguser from './Components/Registereduser';
 import Past from './Components/PastEvents';
 import Events from './Components/EventsReg';
-
+import snack from './Components/Snackbar';
+import Pastphotos from './Components/Pastupload';
+import leaderui from './Components/Leaderboard';
 function App() {
   return (
     <Router>
@@ -30,6 +33,9 @@ function App() {
     <Route exact path='/Registereduser'  component={Reguser}/>
     <Route exact path='/PastEvents'  component={Past}/>
     <Route exact path='/EventsRegistered'  component={Events}/>
+    <Route exact path='/Snackbar'  component={snack}/>
+    <Route exact path='/Pastphotosupload'  component={Pastphotos}/>
+    <Route exact path='/Leaderboard'  component={leaderui}/>
    </Switch>
    </Router>
      )
