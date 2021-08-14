@@ -6,6 +6,7 @@ import axios from 'axios';
 import moment from 'moment';
 import Homebar from "./Homebar";
 import Footer from './Footer';
+import Snack from './Snackbar';
 const useStyles=makeStyles({
 card:{
     backgroundColor:"#D6EAF8",
@@ -27,6 +28,7 @@ const Weekend = (props) => {
     const btnStyle = {margin:'8px 0' }
     const gridStyle={ margin:'3px auto', padding:'5px auto'}
     
+    const [notify,setNotify]=useState({isOpen:false,mesg:''});
 
     
     const [wevent,setWevent]=useState([])
@@ -57,22 +59,32 @@ const Weekend = (props) => {
             console.log(response)
             console.log(response.status)
             if (res === 200) {
-                
-               alert("Registered Successfully")
+                setNotify({
+                    isOpen:true,
+                    mesg:"Registered successfully"
+                })
+            //    alert("Registered Successfully")
             }
         })
         .catch((error) => {
             if (error.response.status === 400) {
                 // console.log(error.response.data.message);
-                alert("Already registered ")
-
+                // alert("Already registered ")
+                setNotify({
+                    isOpen:true,
+                    mesg:"Already Registered"
+                })
                 
             }
-            else
-                alert("Something went wrong")
+            else{
+            // setSuccess(false);
             console.log(error)
+            setNotify({
+                isOpen:true,
+                mesg:"Something went wrong!"
+            })}
         });
-        
+        //  setSuccess(false);
     };
     const classes=useStyles();
     return(
@@ -117,7 +129,10 @@ const Weekend = (props) => {
                   
               
             </Grid>
-          
+            <Snack
+              notify={notify}
+              setNotify={setNotify}
+              />
       </Box>
       <Footer/>
     </Box>
