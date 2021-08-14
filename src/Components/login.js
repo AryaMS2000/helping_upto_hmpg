@@ -1,4 +1,5 @@
-import React from 'react';
+
+import {React,useState} from 'react';
 import { useHistory } from 'react-router-dom';
 import { Grid, Paper, TextField, Button, Typography, Link } from '@material-ui/core'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -9,7 +10,7 @@ import * as Yup from 'yup'
 import axios from 'axios';
 //import home from './home';
 import logo from './logo.jpg';
-
+import Snack from './Snackbar';
 
 
 const Login = ({ handleChange }) => {
@@ -18,6 +19,9 @@ const Login = ({ handleChange }) => {
     const headStyle={margin:0,fontFamily:'san-serif',color:'blue'}
     const btnstyle = { margin: '8px 0' }
     const imgstyle={height:100,width:180}
+    //  const [success,setSuccess]=useState(false);
+    // const [mesg,setMesg]=useState('');
+    const [notify,setNotify]=useState({isOpen:false,mesg:''});
     const initialValues = {
         email: '',
         password: '',
@@ -52,39 +56,30 @@ const Login = ({ handleChange }) => {
         .catch((error) => {
             if (error.response.status === 403) {
                 console.log(error.response.data);
-               
-                alert("Invalid email or Password ")
+                //setSuccess(true);
+                // alert("Invalid email or Password ")
+                // 
+                setNotify({
+                    isOpen:true,
+                    mesg:"Invalid Email or password"
+                })
                 props.resetForm()
             }
-            else
-                alert("Something went wrong")
+            else{
+                setNotify({
+                    isOpen:true,
+                    mesg:"Something went wrong"
+                })
+                // alert("Something went wrong")
+            //  setSuccess(true);
+            //  setMesg("Something went wrong!");
             console.log(error)
-        });
+        }});
         
-          
+        //   setSuccess(false);
           
     }
-            /*.then((response) => {
-                var res = response.status;
-                console.log(response.data)
-                console.log(response.status)
-                if (res === 200) {
-                    alert("Logged in")
-                    history.push('./home');
-                }
-
-            })
-            .catch((error) => {
-                if (error.response.status === 403) {
-                    console.log(error.response.data.message);
-                    alert("Invalid emailid or password")
-
-                    props.resetForm()
-                }
-                else
-                    alert("Something went wrong")
-                console.log(error)
-            });}*/
+            
     
 
       
@@ -136,6 +131,12 @@ const Login = ({ handleChange }) => {
                 <a href="Register">Signup</a>
                 </Typography>
             </Paper>
+            {/* {success ?<Snack mesg={mesg}/>:''} */}
+            <Snack
+              notify={notify}
+              setNotify={setNotify}
+              />
+           
         </Grid>
     )
 }
