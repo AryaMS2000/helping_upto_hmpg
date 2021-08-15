@@ -1,4 +1,4 @@
-import React,{ useState, useEffect, useReducer } from 'react';
+import React,{ useState, useEffect, useReducer,Fragment} from 'react';
 import { useHistory } from 'react-router-dom';
 import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
 import 'date-fns';
@@ -14,10 +14,14 @@ import '../App.css';
 //import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import Homebar from "./Homebar";
 import Footer from "./Footer";
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 function profileRegister(myprofile, action) {
     const dataProfile=JSON.parse(localStorage.getItem("myProfile"))
     const info=JSON.parse(localStorage.getItem("myInfo"))
+    
     switch (action.type) {
         case 'field': {
             return {
@@ -57,6 +61,12 @@ function profileRegister(myprofile, action) {
         return myprofile;
     }
   }
+  const useStyles=makeStyles(theme=>({
+  root:{
+    top:theme.spacing(9)
+  }
+}
+  ))
 
 const Profile=()=>{
     const paperStyle={padding :'20px 20px',width:800, height:600, margin:"30px auto"}
@@ -64,6 +74,7 @@ const Profile=()=>{
     const btnstyle = { margin:'10px auto',display:'flex',justifyContent:'center',alignItems:'center', width:'30%',height:'20%'}
     const imgstyle={height:100,width:180}
     const dataInfo=JSON.parse(localStorage.getItem("myInfo"))
+    const classes=useStyles();
     const initialValues = {
         fname: dataInfo.firstname,
         lname: dataInfo.lastname,
@@ -86,6 +97,9 @@ const Profile=()=>{
     
     const [myprofile, setMyprofile] = useReducer(profileRegister, initialValues);
     const { email,mobile_number,about,location,address,gender,dob } = myprofile;
+    const [success,setSuccess]=useState(false);
+    const [mesg,setMesg]=useState('');
+    const [open, setOpen] =useState(false);
     useEffect(()=>{
         
         axios.get(`http://localhost:8081/account/getProfile/${id}`)
@@ -115,6 +129,7 @@ const Profile=()=>{
             location,
             address
         };
+        
         console.log(user)
         axios.post("http://localhost:8081/account/saveProfile", user)
         .then((response) => {
@@ -122,24 +137,42 @@ const Profile=()=>{
            
             console.log(response.status)
             if (res === 200) {
-                alert("Profile Updated")
-                history.push('/apphome');
+                // alert("Profile Updated")
+                // history.push('/apphome');
+                    setSuccess(true);
+                    setMesg("Profile Updated!");
+                    setOpen(true);
             }
 
         })
         .catch((error) => {
             if (error.response.status === 400) {
                 console.log(error.response.data.message);
-                alert("Error ")
+                // alert("Error ")
+                    setOpen(true);
+                    setMesg(error.response.data.message);
 
                 
             }
-            else
-                alert("Something went wrong")
+            else{
+                // alert("Something went wrong")
+                   setOpen(true);
+                    setMesg("Something went wrong");}
             console.log(error)
         });
         
     }
+    const handleClose = (event, reason) => {
+      if(success)
+      {
+          setOpen(false);
+          history.push('/apphome');
+      }
+      else{
+          setOpen(false);
+          
+      }
+  };
         
         const validationSchema = Yup.object().shape({
             
@@ -277,6 +310,25 @@ const Profile=()=>{
             </Formik>
            
         </Paper>
+        <Snackbar
+        className={classes.root}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={mesg}
+        action={
+          <Fragment>
+           
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Fragment>
+        }
+        />    
         <Footer/>
     </Grid>
 )
