@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import {Grid, Card, Box, Button, CardContent, Typography, makeStyles} from '@material-ui/core';
 import imgl from './logo.jpg';
-import wkndevnt1 from './explore.jpeg';
+import wkndevnt1 from './weekimg.jpg';
 import axios from 'axios';
 import moment from 'moment';
 import Homebar from "./Homebar";
