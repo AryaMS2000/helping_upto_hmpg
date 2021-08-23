@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import './help.css';
 import '../App.css';
+import { makeStyles } from '@material-ui/core/styles';
 //import moment from 'moment';
 //import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import Homebar from "./Homebar";
@@ -176,25 +177,28 @@ const Profile=()=>{
         
         const validationSchema = Yup.object().shape({
             
-             mobile_number: Yup. string(). matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[ 0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
-             'Enter a valid mobile number').required("Required"),
+             mobile_number: Yup.string() 
+               //.matches(/^\+(?:[0-9] ?){6,14}[0-9]$/,"Enter a valid number").required("Required"),
+            .matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+           
+              ,"Enter valid phone number") .required("Required"),
              about: Yup.string().required("Required"),
-             //dob: Yup.date().required("Required"),
+             dob: Yup.date().required("Required"),
              location: Yup.string().required("Required"),
              address: Yup.string().required("Required"),
            
                 })
         
-        
+                const info1=JSON.parse(localStorage.getItem("myInfo"))
     return(
         <Grid>
         <Homebar/>
         <Paper elevation={20} style={paperStyle}>
             <Grid align='center'>
-            <div>
+            {/* <div>
             <img src={imgl} style={imgstyle} alt=""/>
             
-            </div>
+            </div> */}
                 <h2 style={headStyle}>Profile</h2>
             </Grid>
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
@@ -203,39 +207,38 @@ const Profile=()=>{
                     <div class="container">
                    <Grid container spacing={2}>
                         <Grid item xs={6}>
-                                <Field as={TextField}  label='First Name' name="fname"   required/>
+                                <Field as={TextField}  label='First Name' name="fname" disabled value={info1.firstname}  required/>
                         </Grid>
                         <Grid item xs={6}>
-                            <Field as={TextField}  label='Last Name' name="lname"   required />
+                            <Field as={TextField}  label='Last Name' name="lname" disabled value={info1.lastname}  required />
                         </Grid>
                     
                         <Grid item xs={6}>
-                            <Field as={TextField} label='Email Id' name="email" value={email}
-                            onChange={(e) =>
-                              setMyprofile({
-                                  type: 'field',
-                                  fieldName: 'email',
-                                  payload: e.currentTarget.value,
-                                })
-                              }
+                            <Field as={TextField} label='Email Id' name="email" disabled value={info1.email}
+                            
                               required/>
                         </Grid>
                         <Grid item xs={6}>
-                            <Field as={TextField} label='Mobile Number' name="mobile_number" required value={mobile_number}
-                            onChange={(e) =>
+                            <Field as={TextField} label='Mobile Number' name="mobile_number" required  value={mobile_number}
+                            error={props.errors.mobile_number && props.touched.mobile_number} onInput={props.handleChange}
+                            pattern="[789]{1}[0-9]{9}" 
+                            onChange={e=>
                               setMyprofile({
                                   type: 'field',
                                   fieldName: 'mobile_number',
                                   payload: e.currentTarget.value,
                                 })
-                              } helperText={<ErrorMessage name="mobile_number" />}/>
+                            
+                              } 
+                              helperText={<ErrorMessage name="mobile_number" />}/>
                         </Grid>
                         
                         
                         
                         <Grid item xs={6}>
                         <DatePickerComponent name="dob" value={dob} format="yyyy/MM/dd" 
-                        label="Enter Date of Birth" width="180px" required
+                        placeholder="Date of Birth" width="180px" required
+                        error={props.errors.dob && props.touched.dob}  onInput={props.handleChange}
                         onChange={(e) =>
                           {console.log(e.target.value)
                           setMyprofile({
@@ -250,6 +253,7 @@ const Profile=()=>{
                         </Grid>
                         <Grid item xs={6}>
                             <Field as={TextField} label='About volunteer'  name="about" required value={about} 
+                            error={props.errors.about && props.touched.about}  onInput={props.handleChange}
                             onChange={(e) =>
                               setMyprofile({
                                   type: 'field',
@@ -260,6 +264,7 @@ const Profile=()=>{
                         </Grid>
                         <Grid item xs={6}>
                             <Field as={TextField} label='Location' name="location" required value={location} 
+                            error={props.errors.location && props.touched.location}   onInput={props.handleChange}
                             onChange={(e) =>
                               setMyprofile({
                                   type: 'field',
@@ -271,6 +276,7 @@ const Profile=()=>{
                         <Grid item xs={6}>
                             <label>Gender</label><br></br>
                             <input type="radio" label="Male"checked={gender==="Male"} value="Male"  name="gender" 
+                            
                             onChange={(e) =>
                               setMyprofile({
                                 type: 'field',
@@ -289,6 +295,7 @@ const Profile=()=>{
                         </Grid>
                         <Grid item xs={12}>
                             <Field as={TextField} label='Address' name="address" required fullWidth value={address}
+                            error={props.errors.address && props.touched.address} required   onInput={props.handleChange}
                             onChange={(e) =>
                               setMyprofile({
                                   type: 'field',
@@ -303,7 +310,8 @@ const Profile=()=>{
                         </Grid>
                         </div>
                         <Button type='submit' color='primary' variant="contained" onClick={onSubmit}
-                            style={btnstyle}>Submit</Button>
+                            style={btnstyle} disabled={props.isSubmitting}
+                            fullWidth>{props.isSubmitting ? "Loading" : "Submit"}</Button>
                         
                     </Form>
                 )}
